@@ -66,7 +66,7 @@ needs_info: list only facts a technician would need to act, such as whether the 
 
 summary: start with the unit if known, then the problem in a few words. details: facts only, no advice.
 
-Always call ${TOOL_NAME}. Never answer in prose.`;
+Every field in the tool schema is required, including needs_info (use an empty array when nothing is missing) and reasoning. Keep every text field short. Always call ${TOOL_NAME}. Never answer in prose.`;
 }
 
 /**
@@ -119,7 +119,7 @@ export class ClaudeTriager implements Triager {
     try {
       const res = await this.client.messages.create({
         model: this.model,
-        max_tokens: 1024,
+        max_tokens: 4096,
         system: [{ type: "text", text: this.system, cache_control: { type: "ephemeral" } }],
         tools: [
           {
@@ -149,7 +149,7 @@ export class ClaudeTriager implements Triager {
         return {
           ok: false,
           error: "schema_invalid",
-          detail: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; "),
+          detail: `stop_reason=${res.stop_reason}, out_tokens=${res.usage.output_tokens}; ` + parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; "),
           model: this.model,
           latency_ms,
           source: this.source,
