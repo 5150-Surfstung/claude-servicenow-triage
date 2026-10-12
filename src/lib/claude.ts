@@ -120,7 +120,6 @@ export class ClaudeTriager implements Triager {
       const res = await this.client.messages.create({
         model: this.model,
         max_tokens: 1024,
-        temperature: 0,
         system: [{ type: "text", text: this.system, cache_control: { type: "ephemeral" } }],
         tools: [
           {
