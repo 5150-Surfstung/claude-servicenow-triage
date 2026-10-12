@@ -46,7 +46,7 @@ export function ArchitectureDiagram() {
           <rect x="370" y="50" width="170" height="82" rx="6" className="fill-navy stroke-gold" strokeWidth="1.5" />
           <text x="455" y="76" textAnchor="middle" className={label}>Claude</text>
           <text x="455" y="95" textAnchor="middle" className="fill-gold text-[11px]">submit_triage(…)</text>
-          <text x="455" y="113" textAnchor="middle" className={sub}>forced tool call, cached prefix</text>
+          <text x="455" y="113" textAnchor="middle" className={sub}>single tool call, cached prefix</text>
         </g>
         <line x1="540" y1="91" x2="568" y2="91" className="stroke-cream/60" strokeWidth="1.5" markerEnd="url(#arrow)" />
 

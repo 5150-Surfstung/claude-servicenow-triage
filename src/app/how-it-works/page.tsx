@@ -26,8 +26,8 @@ export default function HowItWorks() {
           on; nothing in it can call a tool.
         </li>
         <li>
-          <strong>Claude, forced into one tool call.</strong> The only tool is <code className="font-mono">submit_triage</code>, whose input schema is generated
-          from the same Zod schema the server validates against. The model cannot answer in prose and cannot invent fields. The
+          <strong>Claude, one tool.</strong> The only tool is <code className="font-mono">submit_triage</code>, whose input schema is generated
+          from the same Zod schema the server validates against. The model cannot invent fields, and if it ever answers in prose instead of calling the tool, the request fails open to a person. The
           system prompt carries a cache breakpoint, so repeat calls read the stable prefix from cache.
         </li>
         <li>

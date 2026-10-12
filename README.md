@@ -8,7 +8,7 @@ Built by Mike Olson ([Surfstung Systems](https://surfstung.com)) as a working de
 
 | Concern | How it's handled |
 | --- | --- |
-| Reliable structure | Claude is forced into one tool call whose input schema is generated from the same Zod schema the server validates with. No prose, no invented fields. |
+| Reliable structure | Claude gets exactly one tool, whose input schema is generated from the same Zod schema the server validates with. No invented fields; a missing tool call fails open to a person. |
 | Cost | The system prompt carries a `cache_control` breakpoint; repeat calls read the stable prefix from cache. Token usage and cache hits are shown per request. |
 | Judgment stays in code | `gate.ts` is pure code. Auto-route only when confidence clears the threshold, the category is known, and no guardrail fired. |
 | Prompt injection | The tenant message is wrapped as data, scanned for instruction-like text, and the model reports its own `injection_suspected` flag. Either forces human review. The only tool is the structured output, so injected text has nothing to drive. |

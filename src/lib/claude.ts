@@ -129,7 +129,9 @@ export class ClaudeTriager implements Triager {
             input_schema: this.schema as Anthropic.Tool["input_schema"],
           },
         ],
-        tool_choice: { type: "tool", name: TOOL_NAME },
+        // Forced tool choice is not supported on the 5.5 models; the prompt instructs the call
+        // and a missing call fails open to a person (see pipeline.ts).
+        tool_choice: { type: "auto" },
         messages: [{ role: "user", content: buildUserMessage(req) }],
       });
       const latency_ms = Date.now() - started;
