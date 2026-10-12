@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #21314d;
+  --color-navy-deep: #182540;
+  --color-cream: #f5f1e6;
+  --color-cream-2: #ece6d6;
+  --color-line: #d8d0bc;
+  --color-gold: #c9a23c;
+  --color-gold-soft: #f1e4bf;
+  --color-clay: #a6492f;
+  --color-clay-soft: #f0d9d0;
+  --color-ink: #1b1f2a;
+  --color-ink-soft: #5b6070;
+  --color-paper: #fbf9f3;
+
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-sans: "Spline Sans", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+html {
+  background: var(--color-cream);
+  color: var(--color-ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+.display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+textarea,
+input,
+select {
+  font: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.stage-enter {
+  animation: stage-in 320ms ease-out both;
+}
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
