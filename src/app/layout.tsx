@@ -3,8 +3,13 @@ import "./globals.css";
 import { Nav } from "@/components/Nav";
 
 export const metadata: Metadata = {
-  title: "Maintenance intake triage",
+  title: { default: "Maintenance intake triage", template: "%s | Maintenance intake triage" },
   description: "Claude reads a tenant's maintenance request, a deterministic gate decides, ServiceNow gets the incident.",
+  openGraph: {
+    title: "Maintenance intake triage",
+    description: "Claude structured outputs, a code-owned gate, idempotent ServiceNow incidents, eval-gated autopilot. Built by Mike Olson.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

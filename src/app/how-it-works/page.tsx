@@ -1,12 +1,24 @@
+import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "How it works" };
+
 export default function HowItWorks() {
   return (
-    <article className="max-w-prose">
-      <h1 className="text-3xl sm:text-4xl font-semibold leading-tight">How it works, and what I would change for a real client</h1>
-      <p className="mt-3 text-ink-soft">
-        The design rule is simple: the model proposes, code decides. Every place a wrong answer could cost money or trust has a
-        deterministic check in front of it.
-      </p>
+    <article>
+      <div className="max-w-prose">
+        <h1 className="text-4xl sm:text-5xl font-semibold leading-[1.05]">The model proposes. Code decides.</h1>
+        <p className="mt-4 text-ink-soft">
+          Every place a wrong answer could cost money or trust has a deterministic check in front of it. Here is the whole
+          thing, then what each piece is for, then what changes for a production client.
+        </p>
+      </div>
 
+      <div className="mt-8">
+        <ArchitectureDiagram />
+      </div>
+
+      <div className="max-w-prose">
       <h2 className="mt-10 text-2xl font-semibold">The pipeline</h2>
       <ol className="mt-4 space-y-4 list-decimal pl-6">
         <li>
@@ -63,6 +75,7 @@ npm install
 npm run dev                   # http://localhost:3000
 npm test                      # unit tests, no network
 npm run eval                  # golden set from the command line`}</pre>
+      </div>
     </article>
   );
 }

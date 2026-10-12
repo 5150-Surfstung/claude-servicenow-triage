@@ -39,7 +39,7 @@ export function EvalRunner() {
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-prose">
-          <h1 className="text-3xl sm:text-4xl font-semibold leading-tight">Does it earn autopilot?</h1>
+          <h1 className="text-4xl sm:text-5xl font-semibold leading-[1.05]">Does it earn autopilot?</h1>
           <p className="mt-3 text-ink-soft">
             Twenty-six golden cases a property manager would agree on: emergencies, routine fixes, Spanish, three problems in one
             message, and two prompt-injection attempts. A case passes only when category, priority, and routing all match.
@@ -82,26 +82,30 @@ export function EvalRunner() {
 
       {report && (
         <section className="mt-8" aria-label="Results">
-          <div className="rounded-md border border-line bg-paper p-5">
+          <div className="console rounded-lg p-5 sm:p-6 stage-enter">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <p className="display text-2xl font-semibold">
+              <p className="display text-3xl sm:text-4xl font-semibold leading-none">
                 {report.totals.passed} of {report.totals.cases} passed, {pct(rate)}
               </p>
-              <p className={`text-sm font-medium ${cleared ? "text-ink" : "text-clay"}`}>
+              <p className={`text-sm font-medium ${cleared ? "text-gold" : "text-clay-soft"}`}>
                 {cleared ? `Clears the ${pct(bar)} autopilot bar` : `Below the ${pct(bar)} autopilot bar: stays in draft mode`}
               </p>
             </div>
-            <div className="relative mt-3 h-3 rounded-full bg-cream-2 overflow-hidden" role="img" aria-label={`Pass rate ${pct(rate)}, bar at ${pct(bar)}`}>
-              <div className={`h-full ${cleared ? "bg-gold" : "bg-clay"}`} style={{ width: `${rate * 100}%` }} />
-              <div className="absolute top-0 h-full w-0.5 bg-navy" style={{ left: `${bar * 100}%` }} title={`Autopilot bar ${pct(bar)}`} />
+            <div className="relative mt-4 h-3 rounded-full bg-cream/10 overflow-visible" role="img" aria-label={`Pass rate ${pct(rate)}, bar at ${pct(bar)}`}>
+              <div className={`h-full rounded-full ${cleared ? "bg-gold" : "bg-clay"}`} style={{ width: `${rate * 100}%` }} />
+              <div className="absolute -top-1.5 h-6 w-0.5 bg-cream" style={{ left: `${bar * 100}%` }} title={`Autopilot bar ${pct(bar)}`} />
+              <span className="absolute -top-6 text-[11px] text-cream/70 -translate-x-1/2" style={{ left: `${bar * 100}%` }}>
+                {pct(bar)}
+              </span>
             </div>
-            <dl className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+            <dl className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
               <Stat k="Category" v={pct(report.totals.category_acc)} />
               <Stat k="Priority" v={pct(report.totals.priority_acc)} />
               <Stat k="Routing" v={pct(report.totals.route_acc)} />
               <Stat k="Avg model latency" v={`${report.totals.avg_latency_ms} ms`} />
             </dl>
-            <p className="mt-3 text-xs text-ink-soft">
+            <TagBreakdown results={report.results} />
+            <p className="mt-4 text-xs text-cream/60">
               Model: {report.mode.triager === "fake" ? "fake keyword model (no API key set); these numbers say nothing about Claude" : report.mode.model}.
               {report.mode.triager === "claude" && ` Cache hits ${report.totals.cache_hits} of ${report.totals.cases}; tokens in ${report.totals.input_tokens}, out ${report.totals.output_tokens}.`}
             </p>
@@ -131,8 +135,47 @@ export function EvalRunner() {
 function Stat({ k, v }: { k: string; v: string }) {
   return (
     <div>
-      <dt className="text-ink-soft">{k}</dt>
-      <dd className="text-lg font-medium">{v}</dd>
+      <dt className="text-cream/60">{k}</dt>
+      <dd className="text-lg font-medium text-cream">{v}</dd>
+    </div>
+  );
+}
+
+const TAG_ORDER = ["emergency", "urgent", "routine", "spanish", "multi-issue", "vague", "injection", "guardrail-probe", "security", "noise", "cleaning"];
+
+/** Pass rate per case tag, so a reviewer can see where the misses cluster instead of reading 26 rows. */
+function TagBreakdown({ results }: { results: CaseResult[] }) {
+  const groups = new Map<string, { pass: number; total: number }>();
+  for (const r of results) {
+    for (const tag of r.tags) {
+      if (tag === "human") continue;
+      const g = groups.get(tag) ?? { pass: 0, total: 0 };
+      g.total += 1;
+      if (r.pass) g.pass += 1;
+      groups.set(tag, g);
+    }
+  }
+  const rows = [...groups.entries()].sort((a, b) => {
+    const ia = TAG_ORDER.indexOf(a[0]);
+    const ib = TAG_ORDER.indexOf(b[0]);
+    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+  });
+  return (
+    <div className="mt-5 grid sm:grid-cols-2 gap-x-8 gap-y-2" role="list" aria-label="Pass rate by case type">
+      {rows.map(([tag, g]) => {
+        const r = g.total ? g.pass / g.total : 0;
+        return (
+          <div key={tag} role="listitem" className="grid grid-cols-[7rem_1fr_3rem] items-center gap-3 text-xs">
+            <span className="text-cream/80 truncate">{tag}</span>
+            <div className="h-1.5 rounded-full bg-cream/10 overflow-hidden">
+              <div className={`h-full ${r === 1 ? "bg-gold" : r >= 0.5 ? "bg-gold/60" : "bg-clay"}`} style={{ width: `${r * 100}%` }} />
+            </div>
+            <span className="text-right text-cream/70 tabular-nums">
+              {g.pass}/{g.total}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }
